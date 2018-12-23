@@ -1,0 +1,30 @@
+
+version: '3'
+services:
+    isay-db:
+        container_name: isay-db
+        build:
+            context: .
+            dockerfile: docker/isay-db/Dockerfile
+        image: postgres:isay-db
+        environment:
+            - POSTGRES_USER=admin
+            - POSTGRES_PASSWORD=admin
+            - POSTGRES_DB=isay
+        ports:
+            - 5433:5432
+
+    isay-daemon:
+        container_name: isay-daemon
+        build:
+            context: .
+            dockerfile: docker/isay-daemon//Dockerfile
+        image: nodejs:isay-daemon
+        links:
+            - isay-db:isay-db
+        volumes:
+            - .:/docker-expressdir
+        ports:
+            - 8080:3000
+        working_dir: /docker-expressdir
+        command: npm start
