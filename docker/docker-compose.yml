@@ -4,8 +4,8 @@ services:
     isay-db:
         container_name: isay-db
         build:
-            context: .
-            dockerfile: docker/isay-db/Dockerfile
+            context: ./
+            dockerfile: ./docker/isay-db/Dockerfile
         image: postgres:isay-db
         environment:
             - POSTGRES_USER=admin
@@ -17,13 +17,13 @@ services:
     isay-daemon:
         container_name: isay-daemon
         build:
-            context: .
-            dockerfile: docker/isay-daemon//Dockerfile
+            context: ./
+            dockerfile: ./docker/isay-daemon/Dockerfile
         image: nodejs:isay-daemon
         links:
             - isay-db:isay-db
         volumes:
-            - .:/docker-expressdir
+            - ../.:/docker-expressdir
         ports:
             - 8080:3000
         working_dir: /docker-expressdir
