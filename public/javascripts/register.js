@@ -5,8 +5,8 @@ $(document).ready(function () {
     var emailRegxp = /[\w-]+@([\w-]+\.)+[\w-]+/; 
     if (emailRegxp.test($("#account").val()) != true) 
       return alert("請輸入email正確格式");
-      if (!checkID($("#numeric").val()))
-        return alert("身分證字號格式錯誤");
+      // if (!checkID($("#numeric").val()))
+      //   return alert("身分證字號格式錯誤");
       if ($("#inputPassword").val() != $("#inputPassword1").val()) {
         return alert("密碼與確認密碼不一致");
       } else {

@@ -1,5 +1,7 @@
 var Sequelize = require('sequelize');
 var db = require('../module/db');
+var express = require('express'); 
+var router = express.Router();
 var crypto = require('crypto');
 
 // var md5=require("md5");
@@ -45,12 +47,15 @@ var User = db.define('member', {
     freezeTableName: true,
     operatorsAliases: false
 });
+ 
 
 
 // User.sync() 會建表並回傳Promise
 // 如果 force = true 會先刪表再建表
 var user = User.sync({ force: false });
  
+// module.exports = router;
+// module.exports = user;
 
 class Member {
     static async addUser(numeric, username, account, passwd, birthday, gender, info) {
@@ -58,7 +63,7 @@ class Member {
             numeric :numeric,
             username: username,
             account: account,
-            passwd : crypto.createHash('md5').update(passwd).digest('hex'),
+            passwd : passwd,
             type: 0,
             birthday: birthday,
             gender: gender,
@@ -70,14 +75,18 @@ class Member {
     }
 
     static async findByNumeric(numeric) {
-        return await User.findOne({ where: { numeric: numeric }} ).then(function(s) {                 
+        return await User.findOne({ where: { numeric: numeric }} ).then(function(s) {                    
             return s;
         });
     }
 
     static async loginAuthentication(account, passwd) {
-        passwd = crypto.createHash('md5').update(passwd).digest('hex') 
+
+        console.log("BBBBBB  " + account)
+        console.log("BBBBBB  " + passwd)
+    
         return await User.findOne({ where: { account: account, passwd : passwd}} )
+        // console.log("SSSSSS" + s)
     }
 }
 
