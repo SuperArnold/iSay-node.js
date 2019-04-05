@@ -26,10 +26,8 @@ router.post('/registeradd', function (req, res, next) {
     var data;
     let success = 0;
     user.findByNumeric(req.body.numeric).then(function (user1) {
-        console.log("user1:   " + user1);
 
         if (user1 == null) {
-            console.log("OOOOOOOOO:   " + req.body.inputPassword);
             let passwd = crypto.createHash('md5').update(req.body.inputPassword).digest('hex');
             user.addUser(req.body.numeric, req.body.name, req.body.account, passwd, req.body.birthday, req.body.gender, req.body.info)
                 .then(function () {
@@ -42,24 +40,12 @@ router.post('/registeradd', function (req, res, next) {
             return res.json({ success: success, message: "已註冊過" });
         }
     });
-    // return res.json(data);
-
-    // return res.render(data);
-    // return res.render('register');
 });
 
 router.post('/authentication', async function (req, res, next) {
     let success;
     console.log("authentication " + req.body.account);
     console.log("authentication " + req.body.passwd);
-    // user.loginAuthentication(req.body.account, req.body.passwd).then(function (user1) {
-    //     console.log("user1:   " + user1.username);
-    //     if (user1 == null) {
-    //         success = 0;
-    //     } else
-    //         success = 1;
-
-    // });
 
     let passwd = crypto.createHash('md5').update(req.body.passwd).digest('hex');
     let user1 = await user.loginAuthentication(req.body.account, passwd)
@@ -74,8 +60,6 @@ router.post('/authentication', async function (req, res, next) {
     console.log("success " + success);
     return res.json({ success: success });
 
-    // return res.render(data);
-    // return res.render('register');
 });
 
 // promise chain !!!!!

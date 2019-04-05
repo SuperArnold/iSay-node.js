@@ -7,19 +7,19 @@ var crypto = require('crypto');
 
 var app = express();
 app.use(session({
-    secret : 'secret', // 對session id 相關的cookie 進行簽名
-    resave : true,
+    secret: 'secret', // 對session id 相關的cookie 進行簽名
+    resave: true,
     saveUninitialized: false, // 是否儲存未初始化的會話
-    cookie : {
-    maxAge : 1000 * 60 * 3, // 設定 session 的有效時間，單位毫秒
+    cookie: {
+        maxAge: 1000 * 60 * 3, // 設定 session 的有效時間，單位毫秒
     },
-    }));
+}));
 // console.log(user.findByName);
 // app.use(express.static(path.join(process.cwd(), 'public')));
 app.use(express.static(__dirname + './public'));
-router.get('/register', function (req, res, next) {
-    console.log("register...");
-    return res.render('register');
+    router.get('/register', function (req, res, next) {
+        console.log("register...");
+        return res.render('register');
 });
 
 router.post('/registeradd', function (req, res, next) {
@@ -67,8 +67,8 @@ router.post('/authentication', async function (req, res, next) {
         success = 0;
     } else {
         success = 1;
-        req.session.loginPass=true;
-        req.session.account=req.body.account;
+        req.session.loginPass = true;
+        req.session.account = req.body.account;
         data = JSON.stringify({ message: "註冊成功" });
     }
     console.log("success " + success);
@@ -115,6 +115,14 @@ router.post('/authentication', async function (req, res, next) {
 
 router.get('/login', function (req, res, next) {
     return res.render('login');
+});
+
+router.get('/findSomeone', function (req, res, next) {
+    user.findSomeone(req.body.username)
+        .then(function (user) {
+            success = 1;
+            return res.json({ success: success, message: user });
+        });
 });
 
 module.exports = user;

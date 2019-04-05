@@ -7,7 +7,7 @@ var crypto = require('crypto');
 // var md5=require("md5");
 
 // 建 model
-var User = db.define('member', {
+var Members = db.define('member', {
     numeric: {
         primaryKey: true,
         type: Sequelize.STRING
@@ -52,14 +52,11 @@ var User = db.define('member', {
 
 // User.sync() 會建表並回傳Promise
 // 如果 force = true 會先刪表再建表
-var user = User.sync({ force: false });
- 
-// module.exports = router;
-// module.exports = user;
+var user = Members.sync({ force: false });
 
 class Member {
     static async addUser(numeric, username, account, passwd, birthday, gender, info) {
-        return await User.create({
+        return await Members.create({
             numeric :numeric,
             username: username,
             account: account,
@@ -75,18 +72,19 @@ class Member {
     }
 
     static async findByNumeric(numeric) {
-        return await User.findOne({ where: { numeric: numeric }} ).then(function(s) {                    
+        return await Members.findOne({ where: { numeric: numeric }} ).then(function(s) {                    
             return s;
         });
     }
 
     static async loginAuthentication(account, passwd) {
+        return await Members.findOne({ where: { account: account, passwd : passwd}} )
+    }
 
-        console.log("BBBBBB  " + account)
-        console.log("BBBBBB  " + passwd)
-    
-        return await User.findOne({ where: { account: account, passwd : passwd}} )
-        // console.log("SSSSSS" + s)
+    static async findSomeone(username, offset) {
+        return await Members.findAll({ 
+            limit : 2 , offset: offset,
+            where: { username: {$like: username + "%"}}} )
     }
 }
 

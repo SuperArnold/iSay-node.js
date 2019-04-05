@@ -29,38 +29,6 @@ var Friend = db.define('friend', {
         operatorsAliases: false
     });
 
-
-var Diary = db.define('diary', {
-    id: {
-        primaryKey: true,
-        type: Sequelize.STRING
-    },
-    title: {
-        type: Sequelize.STRING, // 指定類型
-        field: 'title' // 欄位
-    },
-    // 没有指定 field，代表欄位跟這個是一樣的
-   
-    content: {
-        type: Sequelize.STRING
-    },
-    place: {
-        type: Sequelize.STRING
-    },
-    time: {
-        type: Sequelize.DATE
-    },
-    permission: {
-        type: Sequelize.INTEGER
-    },
-    music_path: {
-        type: Sequelize.STRING
-    },
-    me_id: {
-        type: Sequelize.STRING
-    }
-});
-
 // Announce.sync() 會建表並回傳Promise
 // 如果 force = true 會先刪表再建表
 var friend = Friend.sync({ force: false });
@@ -78,31 +46,31 @@ class FriendModule {
     }
 
     static async find(me_id1) {
-        console.log("XXXXXXXXXX")
-        // Friend.belongsTo(Diary, {foreignKey: 'me_id1'})
-        // Diary.belongsTo(Friend, {foreignKey: 'me_id1'}) 
-        // return await Friend.find(
-        //     {
-                // $sub: {
-                    // union: [{
-                        // where: {
-                        //     me_id1: me_id1
-                        // }, include: [Diary]
-                    // }, {
-                    //     where: {
-                    //         me_id1: "1111111112"
-                    //     }
-                    // }
-                    // ]
-                // }
-            // }
-            return await db.query("select * from friend"
-
-
-
-        ).then(function (s) {
-            return s;
+        return await db.query("select * from friend where me_id1 ='"+ me_id1 + "' and friendly = 2").then(function (s) {
+            return s[0];
         });
+    }
+    
+    static async friendInvite(me_id2) {
+        return await Friend.find({
+            me_id2: me_id2,
+            friendly: 1
+        });
+    }
+
+    static async friendSomeone(me_id2) {
+        return await Friend.find({
+            me_id2: me_id2
+        });
+    }
+    static async friendUpsert(me_id1, me_id2, friendly) {
+        return await Friend.upsert({
+            me_id1: me_id1,
+            me_id2: me_id2,
+            friendly : friendly
+        },{individualHooks: false}).then(t => {
+            console.log("t " +t)
+        }) ;
     }
 }
 

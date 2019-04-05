@@ -56,11 +56,7 @@ class ImagesModule{
 
     static async loginAuthentication(account, passwd) {
 
-        console.log("BBBBBB  " + account)
-        console.log("BBBBBB  " + passwd)
-    
         return await Images.findOne({ where: { account: account, passwd : passwd}} )
-        // console.log("SSSSSS" + s)
     }
 }
 

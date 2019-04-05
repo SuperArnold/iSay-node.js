@@ -56,12 +56,7 @@ class AnnounceModule{
     }
 
     static async loginAuthentication(account, passwd) {
-
-        console.log("BBBBBB  " + account)
-        console.log("BBBBBB  " + passwd)
-    
         return await Announce.findOne({ where: { account: account, passwd : passwd}} )
-        // console.log("SSSSSS" + s)
     }
 }
 

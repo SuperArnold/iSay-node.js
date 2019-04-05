@@ -27,6 +27,18 @@ router.get("/find", function (req, res, next) {
 
 });
 
+router.get("/findOneDiary", function (req, res, next) {
+    offset = 0;
+    if (req.body.offset)
+        offset = req.body.offset;
+    console.log("req.body.offset11111111111111  " + req.body.me_id1);
+    diary.findOneDiary(req.body.id, req.body.me_id1).then(function (diaryContent) {
+
+        return res.json({ success: 1, message: diaryContent });
+    });
+
+});
+
 router.get("/update", function (req, res, next) {
     let body = req.body;
     let music_path = 'music_path';

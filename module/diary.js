@@ -1,6 +1,6 @@
 var Sequelize = require('sequelize');
 var db = require('./db');
-var express = require('express'); 
+// var express = require('express');
 
 // 建 model
 var Diary = db.define('diary', {
@@ -23,6 +23,7 @@ var Diary = db.define('diary', {
     time: {
         type: Sequelize.DATE
     },
+    //1.自己 2.好友 3.公開 0.刪除 
     permission: {
         type: Sequelize.INTEGER
     },
@@ -37,7 +38,32 @@ var Diary = db.define('diary', {
     freezeTableName: true,
     operatorsAliases: false
 });
- 
+
+var Friend = db.define('friend', {
+    me_id1: {
+        primaryKey: true,
+        type: Sequelize.STRING
+    },
+    me_id2: {
+        primaryKey: true,
+        type: Sequelize.STRING
+    },
+    // 没有指定 field，代表欄位跟這個是一樣的
+    /*
+    0 一般
+    1 申請
+    2 好友
+    3 摯友
+    4 封鎖
+    */
+    friendly: {
+        type: Sequelize.INTEGER
+    }
+}, {freezeTableName: true, operatorsAliases: false});
+Friend.hasMany(Diary, {foreignKey: 'me_id1'});
+Friend.hasMany(Diary, {foreignKey: 'me_id2'});
+Diary.belongsTo(Friend, {foreignKey: 'me_id'});
+// Friend.belongsTo(Diary, {targetKey:'me_id1',foreignKey: 'me_id'});
 
 
 // Announce.sync() 會建表並回傳Promise
@@ -74,6 +100,45 @@ class DiaryModule{
         });
     }
 
+    static async findOneDiary_self(id, me_id1){
+        return await  Diary.find({ 
+                attributes: ['id', 'title', 'content', 'place', 'time'],
+                where: { id: id,
+                    me_id : me_id1,
+                    permission : {
+                        $gte : 1
+                    }
+                }
+            }).then(function(s) {
+                return s;
+            }).catch(err => {
+                return err
+            });
+    }
+
+    static async findOneDiary(id, me_id1){
+        return await  Diary.find({ 
+                attributes: ['id', 'title', 'content', 'place', 'time'],
+                where: { id: id,
+                    permission : {
+                        $gte : 1
+                    }
+                }, include: [{
+                    model: Friend,
+                    where: {
+                        me_id1: me_id1,
+                        friendly : {
+                            $in: [2, 3]
+                        }
+                   }
+                 }]
+            }).then(function(s) {
+                return s;
+            }).catch(err => {
+                return err
+            });
+    }
+ 
     static async update(id, title, content, place, permission, music_path, me_id) {
         return await Diary.update({
             title : title,
@@ -87,7 +152,6 @@ class DiaryModule{
                     id : id
                 }
             });
-        // console.log("SSSSSS" + s)
     }
     static async delete(id, permission, me_id) {
         return await Diary.update({
@@ -98,7 +162,6 @@ class DiaryModule{
                     id : id
                 }
             });
-        // console.log("SSSSSS" + s)
     }
 }
 
