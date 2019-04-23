@@ -1,7 +1,6 @@
 var user = require('../module/member');
 var express = require('express');
 var session = require('express-session');
-var authorize = require('../module/authorize');
 var router = express.Router();
 var crypto = require('crypto');
 
@@ -118,11 +117,29 @@ router.get('/login', function (req, res, next) {
 });
 
 router.get('/findSomeone', function (req, res, next) {
+    console.log("!!!!!!!!!!!!!")
     user.findSomeone(req.body.username)
         .then(function (user) {
             success = 1;
             return res.json({ success: success, message: user });
         });
+});
+
+router.get('/jwt', function (req, res, next) {
+
+    let passwd = crypto.createHash('md5').update(req.body.passwd).digest('hex');
+    let user1 = await user.loginAuthentication(req.body.account, passwd)
+    if (user1 == null) {
+        success = 0;
+    } else {
+        success = 1;
+        req.session.loginPass = true;
+        req.session.account = req.body.account;
+        data = JSON.stringify({ message: "登入" });
+    }
+    console.log("success " + success);
+    return res.json({ success: success });
+
 });
 
 module.exports = user;

@@ -1,6 +1,5 @@
 var Sequelize = require('sequelize');
 var db = require('./db');
-var express = require('express');
 
 // 建 model
 var Friend = db.define('friend', {
@@ -31,7 +30,7 @@ var Friend = db.define('friend', {
 
 // Announce.sync() 會建表並回傳Promise
 // 如果 force = true 會先刪表再建表
-var friend = Friend.sync({ force: false });
+Friend.sync({ force: false });
 
 // module.exports = router;
 // module.exports = user;
