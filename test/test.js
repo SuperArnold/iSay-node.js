@@ -1,4 +1,4 @@
-var request = require('supertest')("http://localhost:3000");
+var request = require('supertest')("http://localhost:8080");
 var expect = require('chai').expect;
 var assert = require("assert")
 
