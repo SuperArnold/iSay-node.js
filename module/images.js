@@ -1,6 +1,5 @@
 var Sequelize = require('sequelize');
 var db = require('./db');
-var express = require('express'); 
 
 // 建 model
 var Images = db.define('images', {
@@ -23,15 +22,10 @@ var Images = db.define('images', {
     freezeTableName: true,
     operatorsAliases: false
 });
- 
-
 
 // Announce.sync() 會建表並回傳Promise
 // 如果 force = true 會先刪表再建表
 var images = Images.sync({ force: false });
- 
-// module.exports = router;
-// module.exports = user;
 
 class ImagesModule{
     static async addImages(name, content, me_id, diary_id) {
@@ -45,7 +39,6 @@ class ImagesModule{
 
     static async find(me_id, diary_id) {
         return await Images.findAll(
-            // { limit : 1 },
             { where: {
                 me_id: me_id,
                 diary_id : diary_id

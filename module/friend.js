@@ -30,10 +30,7 @@ var Friend = db.define('friend', {
 
 // Announce.sync() 會建表並回傳Promise
 // 如果 force = true 會先刪表再建表
-Friend.sync({ force: false });
-
-// module.exports = router;
-// module.exports = user;
+var friend = Friend.sync({ force: false });
 
 class FriendModule {
     static async addFriend(me_id1, me_id2, friendly) {
@@ -49,7 +46,6 @@ class FriendModule {
             return s[0];
         });
     }
-    
     static async friendInvite(me_id2) {
         return await Friend.find({
             me_id2: me_id2,
@@ -63,12 +59,12 @@ class FriendModule {
         });
     }
     static async friendUpsert(me_id1, me_id2, friendly) {
+
         return await Friend.upsert({
             me_id1: me_id1,
             me_id2: me_id2,
             friendly : friendly
         },{individualHooks: false}).then(t => {
-            console.log("t " +t)
         }) ;
     }
 }

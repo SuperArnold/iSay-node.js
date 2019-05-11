@@ -63,15 +63,6 @@ var Friend = db.define('friend', {
 Friend.hasMany(Diary, {foreignKey: 'me_id1'});
 Friend.hasMany(Diary, {foreignKey: 'me_id2'});
 Diary.belongsTo(Friend, {foreignKey: 'me_id'});
-// Friend.belongsTo(Diary, {targetKey:'me_id1',foreignKey: 'me_id'});
-
-
-// Announce.sync() 會建表並回傳Promise
-// 如果 force = true 會先刪表再建表
-var dia = Diary.sync({ force: false });
- 
-// module.exports = router;
-// module.exports = user;
 
 class DiaryModule{
     static async addDiary(uuid, title, content, place, permission, time, music_path, me_id) {
@@ -87,7 +78,7 @@ class DiaryModule{
         });
     }
 
-    static async find(me_id, offset) {
+    static async find(me_id) {
         return await db.query(
             "select * from diary where me_id = '" + me_id + 
             "' union select * from diary where me_id in " + 
@@ -109,7 +100,7 @@ class DiaryModule{
                         $gte : 1
                     }
                 }
-            }).then(function(s) {
+            }).then(function(s) {           
                 return s;
             }).catch(err => {
                 return err

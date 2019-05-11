@@ -1,6 +1,5 @@
 var Sequelize = require('sequelize');
 var db = require('./db');
-var express = require('express'); 
 
 // 建 model
 var Announce = db.define('announce', {
@@ -47,7 +46,6 @@ class AnnounceModule{
 
     static async find(me_id) {
         return await Announce.findAll(
-            // { limit : 1 },
             { where: {
                 me_id: me_id
             }}).then(function(s) {                    

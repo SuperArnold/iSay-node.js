@@ -9,13 +9,10 @@ var formidable = require("formidable");//上傳圖片用
 var multer = require('multer');
 var upload = multer({ dest: 'uploadFile/' });
 fs = require("fs");
-var uuid = require('uuid/v1');
 
 
 
 router.get("/", function (req, res, next) {
-    console.log("req " + req.session.account);
-    console.log("authorize " + authorize.isPass(req))
     let success = 0;
     var sess = req.session;
     console.log("context " + sess.account);
@@ -32,7 +29,6 @@ router.get("/", function (req, res, next) {
 
 
 router.get("/home", function (req, res, next) {
-    // res.send(json({ success: success, username : "11112222" }));
     return res.render('home', res.json({ username: 1, st: "11112222" }));
 
 });
@@ -48,24 +44,6 @@ router.get("/order", function (req, res, next) {
 
 });
 router.post("/upload", upload.any(), function (req, res, next) {
-    // var form = new formidable.IncomingForm();
-    //     console.log("about to parse " + req.files);
-    //     form.parse(req, function(error, fields, files) {
-    //         console.log("parsing done");
-    //         console.log(files.upload);
-    //         fs.writeFileSync("public/test.png", fs.readFileSync(files.upload.path));
-    //         return res.json({ success: 1, message: "aaaaa"});
-    //     });
-
-
-    // var form = new formidable.IncomingForm();
-    // form.parse(req, function (error, fields, files) {
-    //     console.log("about to parse " + files);
-    //     console.log("parsing done");
-    //     fs.writeFile("/Users/arnold/Desktop/新增資料夾/TEST.jpg", files);
-
-    //     return res.json({ success: 1, message: "aaaaa"});
-    // });
 
     var newFile = "./uploadFile/" + req.files[0].originalname;
     fs.readFile(req.files[0].path, function (err, data) {
@@ -83,7 +61,5 @@ router.post("/upload", upload.any(), function (req, res, next) {
     })
 
 });
-
-
 
 module.exports = router;

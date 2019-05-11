@@ -7,9 +7,17 @@ var session = require('express-session');
 var uuid=require('uuid');
 var user = require('./routes/users');
 var context = require('./routes/context');
-var index = require('./routes/index');
 var diary = require('./routes/diary');
 var friend = require('./routes/friend');
+var jwt = require('./routes/jwt');
+var jwt_config = require('./config/jwt.json');  //讀檔
+var fs = require('fs');
+var config = JSON.parse(fs.readFileSync('./config/jwt.json').toString());
+
+
+secret = jwt_config.secret;
+console.log("111111111111111111111111111111111111: " + jwt_config.secret)
+console.log("222222222222222222222222222222222222: " + config.secret)
 
 var app = express();
 
@@ -37,6 +45,9 @@ app.use('/user', user);
 app.use('/context', context);
 app.use('/diary', diary);
 app.use('/friend', friend);
+
+app.use('/jwt', jwt);
+
 
 // res.send('aaa'); HttpResponse !! node.js http Response; http Request;
 

@@ -1,13 +1,8 @@
 var Sequelize = require('sequelize');
 var db = require('../module/db');
-var express = require('express'); 
-var router = express.Router();
-var crypto = require('crypto');
-
-// var md5=require("md5");
 
 // 建 model
-var Members = db.define('member', {
+var User = db.define('member', {
     numeric: {
         primaryKey: true,
         type: Sequelize.STRING
@@ -43,7 +38,7 @@ var Members = db.define('member', {
         type: Sequelize.INTEGER
     }
 }, {
-    // 如果true 表會與model相同，即 test_user
+    // 如果true 表會與model相同
     freezeTableName: true,
     operatorsAliases: false
 });
@@ -52,11 +47,11 @@ var Members = db.define('member', {
 
 // User.sync() 會建表並回傳Promise
 // 如果 force = true 會先刪表再建表
-var user = Members.sync({ force: false });
+var user = User.sync({ force: false });
 
 class Member {
     static async addUser(numeric, username, account, passwd, birthday, gender, info) {
-        return await Members.create({
+        return await User.create({
             numeric :numeric,
             username: username,
             account: account,
@@ -72,17 +67,19 @@ class Member {
     }
 
     static async findByNumeric(numeric) {
-        return await Members.findOne({ where: { numeric: numeric }} ).then(function(s) {                    
+        return await User.findOne({ where: { numeric: numeric }} ).then(function(s) {                    
             return s;
         });
     }
 
     static async loginAuthentication(account, passwd) {
-        return await Members.findOne({ where: { account: account, passwd : passwd}} )
+        return await User.findOne({
+            attributes: ['numeric', 'username', "account", "birthday", "gender"],
+            where: { account: account, passwd : passwd}} )
     }
 
     static async findSomeone(username, offset) {
-        return await Members.findAll({ 
+        return await User.findAll({ 
             limit : 2 , offset: offset,
             where: { username: {$like: username + "%"}}} )
     }

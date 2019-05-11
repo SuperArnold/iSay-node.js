@@ -1,10 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var friend = require('../module/friend');
-var Sequelize = require('sequelize');
 
 router.get("/add", function (req, res, next) {
-    console.log("req.body.context  " + req.body.context);
     let body = req.body;
     friend.addFriend(body.me_id1, body.me_id2, body.friendly).then(function () {
         friend.addFriend(body.me_id2, body.me_id1, body.friendly).then(function () {
@@ -22,7 +20,6 @@ router.get("/find", function (req, res, next) {
     
         friend.find(req.body.me_id1)
     .then(function (friendContent) {
-    
         return res.json({ success: 1, message: friendContent });
     });
 
@@ -52,12 +49,9 @@ router.get("/delete", function (req, res, next) {
 
 router.get("/friendUpsert", function (req, res, next) {
     let body = req.body;
-    console.log(body)
     friend.friendUpsert(body.me_id1, body.me_id2, body.friendly).then(function (y) {
-        console.log("yyyy " + y)
         return res.json({ success: 1, message: "好友更新成功" });
     }).catch(err => {
-        console.log("yyyy " + err)
         return res.json({ success: -1, message: err });
     });
 
